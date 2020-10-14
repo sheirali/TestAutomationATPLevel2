@@ -3,3 +3,5 @@
 ################################################################################
 
 /CSharpLevel2/obj
+/WebDriverAdvancedTests/obj
+/WebDriverAdvancedTests/bin/Debug/netcoreapp3.1
