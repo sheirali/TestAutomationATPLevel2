@@ -73,5 +73,37 @@ namespace AppiumGettingStartedTests
 
             Assert.IsTrue(saveButton.Enabled);
         }
+
+        [TestMethod]
+        public void LightTheme()
+        {
+            //var viewButton = _driver.FindElementByXPath("//android.widget.View[@content-desc='View']");
+
+            //https://qavalidation.com/2016/07/scrolling-in-appium.html/ -- Utils
+            var winSize = _driver.Manage().Window.Size;
+            int scrollStart = (int)(winSize.Height * 0.5);
+            int scrollEnd = (int)(winSize.Height * 0.2);
+
+            //Message=The IWebDriver object must implement or wrap a driver that implements IHasTouchScreen. (Parameter 'driver')
+            //OpenQA.Selenium.Interactions.TouchActions touch = new OpenQA.Selenium.Interactions.TouchActions(_driver);
+            //touch.Scroll(scrollStart, scrollEnd);
+            //touch.Perform();
+
+            
+            By byScrollLocator = new ByAndroidUIAutomator("new UiSelector().text(\"Views\");");
+            //Message = An element could not be located on the page using the given search parameters.
+            var viewsButton = _driver.FindElement(byScrollLocator);
+            viewsButton.Click();
+
+            
+            var demoTitle = _driver.FindElementByXPath("/hierarchy/android.widget.FrameLayout/android.view.ViewGroup/android.widget.FrameLayout[1]/android.view.ViewGroup");
+            Assert.AreEqual<string>("API Demos", demoTitle.Text, "Not on Controls page");
+            
+            var lightThemeButton = _driver.FindElementByXPath("//android.widget.TextView[@content-desc='1. Light Theme']");
+            lightThemeButton.Click();
+
+            var themeTitle = _driver.FindElementByXPath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout[1]/android.widget.TextView");
+            Assert.AreEqual<string>("Views/Controls/1. Light Theme", themeTitle.Text, "Not on Light Theme page");
+        }
     }
 }
