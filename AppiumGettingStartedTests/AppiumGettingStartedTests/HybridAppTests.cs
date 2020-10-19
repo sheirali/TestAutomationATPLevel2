@@ -29,32 +29,26 @@ namespace AppiumGettingStartedTests
             appiumOptions.AddAdditionalCapability(AndroidMobileCapabilityType.AppPackage, "io.selendroid.testapp");
             appiumOptions.AddAdditionalCapability(AndroidMobileCapabilityType.AppActivity, "HomeScreenActivity");
 
-            _driver = new AndroidDriver<AppiumWebElement>(_appiumLocalService, appiumOptions);
+            _driver = new AndroidDriver<AppiumWebElement>(new Uri("http://127.0.0.1:4723/wd/hub"), appiumOptions);
             _driver.CloseApp();
         }
 
         [TestInitialize]
         public void TestInitialize()
         {
-            if (_driver != null)
-            {
-                _driver.LaunchApp();
-            }
+            _driver?.LaunchApp();
         }
 
         [TestCleanup]
         public void TestCleanup()
         {
-            if (_driver != null)
-            {
-                _driver.CloseApp();
-            }
+            _driver?.CloseApp();
         }
 
         [ClassCleanup]
         public static void ClassCleanup()
         {
-            _appiumLocalService.Dispose();
+            ////_appiumLocalService.Dispose();
         }
 
         [TestMethod]

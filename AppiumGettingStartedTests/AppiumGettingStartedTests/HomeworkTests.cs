@@ -11,7 +11,7 @@ using System.IO;
 namespace AppiumGettingStartedTests
 {
     [TestClass]
-    public class AppiumTests
+    public class HomeworkTests
     {
         private static AndroidDriver<AndroidElement> _driver;
         private static AppiumLocalService _appiumLocalService;
@@ -31,7 +31,7 @@ namespace AppiumGettingStartedTests
             appiumOptions.AddAdditionalCapability(AndroidMobileCapabilityType.AppActivity, ".ApiDemos");
             appiumOptions.AddAdditionalCapability(MobileCapabilityType.App, testAppPath);
 
-            _driver = new AndroidDriver<AndroidElement>(_appiumLocalService, appiumOptions);
+            _driver = new AndroidDriver<AndroidElement>(new Uri("http://127.0.0.1:4723/wd/hub"), appiumOptions);
             _driver.CloseApp();
         }
 
@@ -54,13 +54,13 @@ namespace AppiumGettingStartedTests
         [ClassCleanup]
         public static void ClassCleanup()
         {
-            _appiumLocalService.Dispose();
+            ////_appiumLocalService.Dispose();
         }
 
         [TestMethod]
         public void PerformActionsButtons()
         {
-            By byScrollLocator = new ByAndroidUIAutomator("new UiSelector().text(\"Views\");");
+            By byScrollLocator = new ByAndroidUIAutomator($"new UiScrollable(new UiSelector()).scrollIntoView(new UiSelector().text(\"Views\"));");
             var viewsButton = _driver.FindElement(byScrollLocator);
             viewsButton.Click();
 
