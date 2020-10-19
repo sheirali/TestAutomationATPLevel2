@@ -128,11 +128,12 @@ namespace WebDriverAdvancedTests
             string city = "Guayanilla", state = "PR [Puerto Rico]", zip = "00656";
 
             //can only do PNG and not JPEG
-            string filename = $"{city}-{state}-{zip}.{ScreenshotImageFormat.Png.ToString()}";
+            string filename = $"{city}-{state}-{zip}.{ScreenshotImageFormat.Png}";
             string fullPath = Path.Combine(tempFilePath, filename);
             Debug.WriteLine(fullPath);
-            TakeFullScreenshot(this._driver, fullPath, ScreenshotImageFormat.Png);
-            Assert.IsTrue(File.Exists(fullPath));
+            TakeFullScreenshot(_driver, fullPath, ScreenshotImageFormat.Png);
+
+            Assert.IsTrue(File.Exists(fullPath), "The screenshot map file was not found.");
         }
 
         [TestMethod]
@@ -175,7 +176,7 @@ namespace WebDriverAdvancedTests
             return $"https://www.google.com/maps/place/{latitude}+{longitude}";
         }
 
-        private void TakeFullScreenshot(IWebDriver driver, String filename, ScreenshotImageFormat format)
+        private void TakeFullScreenshot(IWebDriver driver, string filename, ScreenshotImageFormat format)
         {
             Screenshot screenshot = ((ITakesScreenshot)driver).GetScreenshot();
             screenshot.SaveAsFile(filename, format);

@@ -10,9 +10,9 @@ namespace WebDriverAdvancedTests
 {
     public class ZipSearchPage
     {
-        private string _searchUrl = "https://www.zip-codes.com/search.asp?selectTab=3";
-        private IWebDriver _driver;
-        private WebDriverWait _wait;
+        private const string SearchUrl = "https://www.zip-codes.com/search.asp?selectTab=3";
+        private readonly IWebDriver _driver;
+        private readonly WebDriverWait _wait;
 
 
         public ZipSearchPage(IWebDriver webDriver)
@@ -33,7 +33,8 @@ namespace WebDriverAdvancedTests
         /// <returns>int - number of records found</returns>
         public int SearchForTown(string townName)
         {
-            _driver.Navigate().GoToUrl(_searchUrl);
+            // facade design pattern
+            _driver.Navigate().GoToUrl(SearchUrl);
 
             WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(2));
             IWebElement town = wait.Until((d) => d.FindElement(By.XPath(@"//*[@id='ui-id-8']/form/input[2]")));
@@ -60,10 +61,9 @@ namespace WebDriverAdvancedTests
             return rows;
         }
 
-
         public int SearchForTownTopResults(string townName, int topCount)
         {
-            _driver.Navigate().GoToUrl(_searchUrl);
+            _driver.Navigate().GoToUrl(SearchUrl);
 
             IWebElement town = _wait.Until((d) => d.FindElement(By.XPath(@"//*[@id='ui-id-8']/form/input[2]")));
             //var town = _driver.FindElement(By.XPath(@"//*[@id='ui-id-8']/form/input[2]"));
@@ -138,7 +138,7 @@ namespace WebDriverAdvancedTests
 
             string tempFilePath = Path.GetTempPath();           
             //can only do PNG and not JPEG
-            string filename = $"{result.City}-{result.State}-{result.ZipCode}.{ScreenshotImageFormat.Png.ToString()}";
+            string filename = $"{result.City}-{result.State}-{result.ZipCode}.{ScreenshotImageFormat.Png}";
             string fullPath = Path.Combine(tempFilePath, filename);
             //Debug.WriteLine(fullPath);
 
@@ -147,8 +147,7 @@ namespace WebDriverAdvancedTests
             string someElXpath = @"//*[@id='pane']/div/div[1]/div/div/div[5]/div[1]/div/button";
             var el = _wait.Until(ExpectedConditions.ElementExists(By.XPath(someElXpath)));
 
-
-            TakeFullScreenshot(this._driver, fullPath, ScreenshotImageFormat.Png);
+            TakeFullScreenshot(_driver, fullPath, ScreenshotImageFormat.Png);
         }
 
         private string ZipInfo(string itemName)
@@ -159,7 +158,7 @@ namespace WebDriverAdvancedTests
             return el.Text;
         }
 
-        private void TakeFullScreenshot(IWebDriver driver, String filename, ScreenshotImageFormat format)
+        private void TakeFullScreenshot(IWebDriver driver, string filename, ScreenshotImageFormat format)
         {
             Screenshot screenshot = ((ITakesScreenshot)driver).GetScreenshot();
             screenshot.SaveAsFile(filename, format);
