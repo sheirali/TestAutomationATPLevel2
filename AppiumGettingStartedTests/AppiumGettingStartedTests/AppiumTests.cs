@@ -7,6 +7,8 @@ using OpenQA.Selenium.Appium.Service;
 using OpenQA.Selenium.Appium.Service.Options;
 using System;
 using System.IO;
+using OpenQA.Selenium.Appium.Interfaces;
+using OpenQA.Selenium.Interactions;
 
 namespace AppiumGettingStartedTests
 {
@@ -69,6 +71,13 @@ namespace AppiumGettingStartedTests
 
             var lightThemeButton = _driver.FindElementByXPath("//*[@text='1. Light Theme']");
             lightThemeButton.Click();
+            _driver.HideKeyboard();
+
+            // rotate the device
+            ////var rotatable = (IRotatable)_driver;
+            ////rotatable.Orientation = ScreenOrientation.Landscape;
+            ////_driver.ToggleWifi();
+
             var saveButton = _driver.FindElementByXPath("//*[@text='Save']");
 
             Assert.IsTrue(saveButton.Enabled);
@@ -85,9 +94,9 @@ namespace AppiumGettingStartedTests
             int scrollEnd = (int)(winSize.Height * 0.2);
 
             //Message=The IWebDriver object must implement or wrap a driver that implements IHasTouchScreen. (Parameter 'driver')
-            //OpenQA.Selenium.Interactions.TouchActions touch = new OpenQA.Selenium.Interactions.TouchActions(_driver);
-            //touch.Scroll(scrollStart, scrollEnd);
-            //touch.Perform();
+            ITouchAction touchActions = new OpenQA.Selenium.Appium.MultiTouch.TouchAction(_driver);
+            ////touchActions.
+            ////touchActions.Perform();
 
             
             By byScrollLocator = new ByAndroidUIAutomator("new UiSelector().text(\"Views\");");
