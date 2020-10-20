@@ -13,8 +13,8 @@ namespace WinAppDriverTests
         private static WindowsDriver<WindowsElement> _driver;
         private static WindowsElement _calculatorResult;
 
-        [ClassInitialize]
-        public static void ClassInitialize(TestContext context)
+        [TestInitialize]
+        public void TestInitialize()
         {
             var appiumOptions = new AppiumOptions();
             appiumOptions.AddAdditionalCapability("app", "Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
@@ -23,12 +23,6 @@ namespace WinAppDriverTests
             _driver = new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4723"), appiumOptions);
             _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
         }
-
-        ////[TestInitialize]
-        ////public void TestInitialize()
-        ////{
-        ////    ////_driver?.LaunchApp();
-        ////}
 
         [TestCleanup]
         public void TestCleanup()
@@ -208,7 +202,7 @@ namespace WinAppDriverTests
             //assume "valid" input, it 77 or 9.12
             foreach (char item in n.ToCharArray())
             {                
-                if (Char.IsDigit(item))
+                if (char.IsDigit(item))
                 {
                     switch (item)
                     {
