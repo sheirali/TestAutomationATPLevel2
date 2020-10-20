@@ -3,6 +3,7 @@ using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Windows;
 using System;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 
 namespace WinAppDriverTests
 {
@@ -53,7 +54,7 @@ namespace WinAppDriverTests
         }
 
         [TestMethod]
-        [TestCategory("CalculatorTest")]
+        [TestCategory("WinAppDriver_Calc")]
         public void Division()
         {
             ClearCalcInput();
@@ -69,7 +70,7 @@ namespace WinAppDriverTests
         }
 
         [TestMethod]
-        [TestCategory("CalculatorTest")]
+        [TestCategory("WinAppDriver_Calc")]
         public void Multiplication()
         {
             ClearCalcInput();
@@ -85,7 +86,7 @@ namespace WinAppDriverTests
         }
 
         [TestMethod]
-        [TestCategory("CalculatorTest")]
+        [TestCategory("WinAppDriver_Calc")]
         public void Subtraction()
         {
             ClearCalcInput();
@@ -100,7 +101,7 @@ namespace WinAppDriverTests
             Assert.AreEqual("8", GetCalculatorResultText());
         }
 
-        [TestCategory("CalculatorTest")]
+        [TestCategory("WinAppDriver_Calc")]
         [DataTestMethod]
         [DataRow("One", "Plus", "Seven", "8")]
         [DataRow("Nine", "Minus", "One", "8")]
@@ -119,7 +120,7 @@ namespace WinAppDriverTests
 
 
         [TestMethod]
-        [TestCategory("CalculatorTest")]
+        [TestCategory("WinAppDriver_Calc")]
         public void SwitchToTemperatureCalc()
         {
             //_driver.FindElementByAccessibilityId("ClearEntryButtonPos0").Click();
@@ -139,7 +140,7 @@ namespace WinAppDriverTests
         }
 
         [TestMethod]
-        [TestCategory("CalculatorTest")]
+        [TestCategory("WinAppDriver_Calc")]
         public void SwitchToAreaCalc()
         {
             //converting square centimeters and asserting that valid square feets are calculated
@@ -159,6 +160,98 @@ namespace WinAppDriverTests
             _driver.FindElementByName("Zero").Click();
 
             Assert.AreEqual("2.17431", GetAreaResultText());
+        }
+
+        [TestCategory("WinAppDriver_Calc")]
+        [DataTestMethod]
+        [DataRow("45", "5", "2")]
+        [DataRow("6", "2", "6")]
+        [DataRow("77", "9.12", "1.6")]
+        public void SwitchToScientificCalc(string n, string x, string y)
+        {
+            //data - driven test to calculate the following formula: Pi + log(n) - x ^ y
+            //Use the following data:
+            //N = 45, x = 5, y = 2
+            //N = 6, x = 2, y = 6
+            //N = 77, x = 9.12, y = 1.6
+
+            _driver.FindElementByAccessibilityId("TogglePaneButton").Click();
+            _driver.FindElementByAccessibilityId("Scientific").Click();
+
+            ClearScientificCalcInput();
+
+            _driver.FindElementByAccessibilityId("piButton").Click();
+            _driver.FindElementByAccessibilityId("plusButton").Click();
+            //n
+            InputNumericValue(n);
+            _driver.FindElementByName("Log").Click();
+
+            _driver.FindElementByName("Minus").Click();
+            //x
+            InputNumericValue(x);
+            _driver.FindElementByAccessibilityId("powerButton").Click();
+            //y
+            InputNumericValue(y);
+            _driver.FindElementByAccessibilityId("powerButton").Click();
+
+            _driver.FindElementByAccessibilityId("equalButton").Click();
+
+            _driver.FindElementByAccessibilityId("decimalSeparatorButton").Click();
+
+            string result = GetCalculatorResultText();
+            Console.WriteLine(result);
+            Assert.AreNotEqual<string>("0", result);
+        }
+
+        private void InputNumericValue(string n)
+        {
+            //assume "valid" input, it 77 or 9.12
+            foreach (char item in n.ToCharArray())
+            {                
+                if (Char.IsDigit(item))
+                {
+                    switch (item)
+                    {
+                        case '0':
+                            _driver.FindElementByName("Zero").Click();
+                            break;
+                        case '1':
+                            _driver.FindElementByName("One").Click();
+                            break;
+                        case '2':
+                            _driver.FindElementByName("Two").Click();
+                            break;
+                        case '3':
+                            _driver.FindElementByName("Three").Click();
+                            break;
+                        case '4':
+                            _driver.FindElementByName("Four").Click();
+                            break;
+                        case '5':
+                            _driver.FindElementByName("Five").Click();
+                            break;
+                        case '6':
+                            _driver.FindElementByName("Six").Click();
+                            break;
+                        case '7':
+                            _driver.FindElementByName("Seven").Click();
+                            break;
+                        case '8':
+                            _driver.FindElementByName("Eight").Click();
+                            break;
+                        case '9':
+                            _driver.FindElementByName("Nine").Click();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                if (Char.IsPunctuation(item))   //ie .
+                {
+                    _driver.FindElementByAccessibilityId("decimalSeparatorButton").Click();
+                }
+            }
         }
 
         private string GetCalculatorResultText()
@@ -193,10 +286,15 @@ namespace WinAppDriverTests
                 .Trim();
         }
 
-
         private void ClearCalcInput()
         {
             var clear = _driver.FindElementByName("Clear entry");
+            clear?.Click();
+        }
+
+        private void ClearScientificCalcInput()
+        {
+            var clear = _driver.FindElementByAccessibilityId("clearButton");
             clear?.Click();
         }
     }
