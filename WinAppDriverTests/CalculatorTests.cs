@@ -156,14 +156,14 @@ namespace WinAppDriverTests
             Assert.AreEqual("2.17431", GetAreaResultText());
         }
 
-        [TestCategory("WinAppDriver_Calc")]
         [DataTestMethod]
+        [TestCategory("WinAppDriver_Calc")]
         [DataRow("45", "5", "2")]
         [DataRow("6", "2", "6")]
         [DataRow("77", "9.12", "1.6")]
         public void SwitchToScientificCalc(string n, string x, string y)
         {
-            //data - driven test to calculate the following formula: Pi + log(n) - x ^ y
+            //data - driven test to calculate the following formula: Pi + log(numberCharacter) - x ^ y
             //Use the following data:
             //N = 45, x = 5, y = 2
             //N = 6, x = 2, y = 6
@@ -171,36 +171,27 @@ namespace WinAppDriverTests
 
             _driver.FindElementByAccessibilityId("TogglePaneButton").Click();
             _driver.FindElementByAccessibilityId("Scientific").Click();
-
             ClearScientificCalcInput();
-
             _driver.FindElementByAccessibilityId("piButton").Click();
             _driver.FindElementByAccessibilityId("plusButton").Click();
-            //n
-            InputNumericValue(n);
+            PickNumericValue(n);
             _driver.FindElementByName("Log").Click();
-
             _driver.FindElementByName("Minus").Click();
-            //x
-            InputNumericValue(x);
+            PickNumericValue(x);
             _driver.FindElementByAccessibilityId("powerButton").Click();
-            //y
-            InputNumericValue(y);
+            PickNumericValue(y);
             _driver.FindElementByAccessibilityId("powerButton").Click();
-
             _driver.FindElementByAccessibilityId("equalButton").Click();
-
             _driver.FindElementByAccessibilityId("decimalSeparatorButton").Click();
 
             string result = GetCalculatorResultText();
-            Console.WriteLine(result);
-            Assert.AreNotEqual<string>("0", result);
+            Assert.AreNotEqual("0", result);
         }
 
-        private void InputNumericValue(string n)
+        private void PickNumericValue(string numberCharacter)
         {
             //assume "valid" input, it 77 or 9.12
-            foreach (char item in n.ToCharArray())
+            foreach (char item in numberCharacter)
             {                
                 if (char.IsDigit(item))
                 {
@@ -241,7 +232,7 @@ namespace WinAppDriverTests
                     }
                 }
 
-                if (Char.IsPunctuation(item))   //ie .
+                if (char.IsPunctuation(item))   //ie .
                 {
                     _driver.FindElementByAccessibilityId("decimalSeparatorButton").Click();
                 }
