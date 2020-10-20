@@ -1,9 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Windows;
-using OpenQA.Selenium.Remote;
 using System;
-using System.IO;
 
 namespace WinAppDriverTests
 {
@@ -15,22 +13,19 @@ namespace WinAppDriverTests
         [ClassInitialize]
         public static void ClassInitialize(TestContext context)
         {
-            var appiumOptions = new DesiredCapabilities();
-            appiumOptions.SetCapability("app", "Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
-            appiumOptions.SetCapability("deviceName", "WindowsPC");
+            var appiumOptions = new AppiumOptions();
+            appiumOptions.AddAdditionalCapability("app", "Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            appiumOptions.AddAdditionalCapability("deviceName", "WindowsPC");
 
             _driver = new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4723"), appiumOptions);
             _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
         }
 
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            if (_driver != null)
-            {
-                _driver.LaunchApp();
-            }
-        }
+        ////[TestInitialize]
+        ////public void TestInitialize()
+        ////{
+        ////    ////_driver?.LaunchApp();
+        ////}
 
         [TestCleanup]
         public void TestCleanup()
@@ -52,7 +47,7 @@ namespace WinAppDriverTests
             _driver.FindElementByName("Seven").Click();
             _driver.FindElementByName("Equals").Click();
 
-            Assert.AreEqual("12", _driver.FindElementByAccessibilityId("CalculatorResults").Text);
+            Assert.IsTrue(_driver.FindElementByAccessibilityId("CalculatorResults").Text.EndsWith("12"), "The calculation result wasn't correct.");
         }
     }
 }
