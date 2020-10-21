@@ -4,83 +4,24 @@ using OpenQA.Selenium.Appium.Windows;
 using System;
 using System.Linq;
 using System.Threading;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
+using WinAppDriverTests.Pages;
 
 namespace WinAppDriverTests
 {
     public class CalculatorPage
     {
         private  WindowsDriver<WindowsElement> _driver;
-        //private  WindowsElement _calculatorResult;
-
-        private enum CalculatorType
-        {
-            Standard,
-            Scientific,
-            Temperature,
-            Area
-        }
 
 
         public CalculatorPage(WindowsDriver<WindowsElement> driver)
         {
-            if (driver == null)
-            {
-                throw new ArgumentNullException("Driver cannot be null.");
-            }
-
-            _driver = driver;
+            _driver = driver ?? throw new ArgumentNullException("Driver cannot be null.");
         }
 
 
-        internal void Addition()
-        {
-            SelectCalculator(CalculatorType.Standard);
-            ClearCalcInput();
-            PickNumericValue("5");
-            PickOperator("+");
-            PickNumericValue("7");
-            PickOperator("=");
-
-            Assert.AreEqual("12", GetStandardCalculatorResultText(), "The calculation result wasn't correct.");
-        }
-
-        internal void Division()
-        {
-            SelectCalculator(CalculatorType.Standard);
-            ClearCalcInput();
-            _driver.FindElementByAccessibilityId("num8Button").Click();
-            _driver.FindElementByAccessibilityId("num8Button").Click();
-            _driver.FindElementByAccessibilityId("divideButton").Click();
-            _driver.FindElementByAccessibilityId("num1Button").Click();
-            _driver.FindElementByAccessibilityId("num1Button").Click();
-            _driver.FindElementByAccessibilityId("equalButton").Click();
-
-            Assert.AreEqual("8", GetStandardCalculatorResultText());
-        }
-
-        internal void Multiplication()
-        {
-            SelectCalculator(CalculatorType.Standard);
-            ClearCalcInput();
-            _driver.FindElementByXPath("//Button[@Name=\"Nine\"]").Click();
-            _driver.FindElementByXPath("//Button[@Name='Multiply by']").Click();
-            _driver.FindElementByXPath("//Button[@Name='Nine']").Click();
-            _driver.FindElementByXPath("//Button[@Name='Equals']").Click();
-
-            Assert.AreEqual("81", GetStandardCalculatorResultText());
-        }
-
-        internal void Subtraction()
-        {
-            SelectCalculator(CalculatorType.Standard);
-            ClearCalcInput();
-            _driver.FindElementByXPath("//Button[@AutomationId='num9Button']").Click();
-            _driver.FindElementByXPath("//Button[@AutomationId='minusButton']").Click();
-            _driver.FindElementByXPath("//Button[@AutomationId='num1Button']").Click();
-            _driver.FindElementByXPath("//Button[@AutomationId='equalButton']").Click();
-
-            Assert.AreEqual("8", GetStandardCalculatorResultText());
-        }
+       
 
         internal void Area()
         {
@@ -89,7 +30,9 @@ namespace WinAppDriverTests
             SelectCalculator(CalculatorType.Area);
             ClearArea();
             _driver.FindElementByAccessibilityId("Units1").Click();
-            _driver.FindElementByName("Square centimetres").Click();
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(30));
+            var squaresmButton = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.Name("Square centimeters")));
+            squaresmButton.Click();
             _driver.FindElementByAccessibilityId("Units2").Click();
             _driver.FindElementByName("Square feet").Click();
 
@@ -98,7 +41,7 @@ namespace WinAppDriverTests
             _driver.FindElementByName("Two").Click();
             _driver.FindElementByName("Zero").Click();
 
-            Assert.AreEqual("2.17431", GetAreaResultText());
+            Assert.IsTrue(GetAreaResultText().EndsWith("2.17431"));
         }
 
         internal void Scientific(string n, string x, string y)

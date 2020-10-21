@@ -12,8 +12,8 @@ namespace WinAppDriverTests
         private static WindowsDriver<WindowsElement> _driver;
         private static CalculatorPage _calcPage;
 
-        [ClassInitialize]
-        public static void ClassInitialize(TestContext context)
+        [TestInitialize]
+        public void TestInit()
         {
             var appiumOptions = new AppiumOptions();
             appiumOptions.AddAdditionalCapability("app", "Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
@@ -22,44 +22,60 @@ namespace WinAppDriverTests
             _driver = new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4723"), appiumOptions);
             Assert.IsNotNull(_driver);
             _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
-
             _calcPage = new CalculatorPage(_driver);
+            _driver.Manage().Window.Maximize();
         }
 
-        [ClassCleanup]
-        public static void ClassCleanup()
+        [TestCleanup]
+        public void TestCleanup()
         {
-            _calcPage = null;
             _driver?.Quit();
         }
 
+        [TestMethod]
+        [TestCategory("Calc Page")]
+        public void Return8_When_Sum4And4()
+        {
+            var scPage = new StandardCalculatorPage(_driver);
+
+            scPage.Sum(4, 4);
+
+            scPage.AssertResult(8);
+        }
 
         [TestMethod]
         [TestCategory("Calc Page")]
-        public void Addition()
+        public void Return8_When_Sum2And2And4()
         {
-            _calcPage.Addition();
+            // Arrange
+            var scPage = new StandardCalculatorPage(_driver);
+
+            // Act
+            scPage.Sum(2, 2, 4);
+
+            // Assert
+            scPage.AssertResult(8);
         }
 
         [TestMethod]
         [TestCategory("Calc Page")]
         public void Division()
         {
-            _calcPage.Division();
+            ////_calcPage.Division();
         }
 
         [TestMethod]
         [TestCategory("Calc Page")]
         public void Multiplication()
         {
-            _calcPage.Multiplication();
+            ////_calcPage.Multiplication();
         }
 
         [TestMethod]
         [TestCategory("Calc Page")]
         public void Subtraction()
         {
-            _calcPage.Subtraction();
+            ////_calcPage.Subtraction();
         }
 
         [TestCategory("Calc Page")]
