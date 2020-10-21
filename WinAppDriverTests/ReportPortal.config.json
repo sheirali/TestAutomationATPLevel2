@@ -1,0 +1,17 @@
+{
+  "enabled": true,
+  "server": {
+    "url": "http://127.0.0.1:8080/api/v1/",
+    "project": "superadmin_personal",
+    "authentication": {
+      "uuid": "6c81c33b-4841-4224-84b6-0b2fb0551c84"
+    }
+  },
+  "launch": {
+    "name": "WinAppDriver Calculator Demo",
+    "description": "This is a demo run",
+    "debugMode": false,
+    "tags": [ "Automate The Planet", "Test Reporting", "MSTEST" ]
+  }
+}
+
