@@ -1,21 +1,16 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OpenQA.Selenium;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Windows;
-using OpenQA.Selenium.Support.UI;
 using System;
-using System.Diagnostics;
-using System.Diagnostics.Contracts;
-using Allure.Commons;
+using System.Linq;
+using System.Threading;
 
 namespace WinAppDriverTests
 {
-    [TestClass]
-    public class CalculatorTests
+    public class CalculatorPage
     {
-        private static WindowsDriver<WindowsElement> _driver;
-        private static WindowsElement _calculatorResult;
-        //private static WebDriverWait _waiter;
+        private  WindowsDriver<WindowsElement> _driver;
+        //private  WindowsElement _calculatorResult;
 
         private enum CalculatorType
         {
@@ -25,70 +20,19 @@ namespace WinAppDriverTests
             Area
         }
 
-        [TestInitialize]
-        public void TestInitialize()
+
+        public CalculatorPage(WindowsDriver<WindowsElement> driver)
         {
-            var appiumOptions = new AppiumOptions();
-            appiumOptions.AddAdditionalCapability("app", "Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
-            appiumOptions.AddAdditionalCapability("deviceName", "WindowsPC");
+            if (driver == null)
+            {
+                throw new ArgumentNullException("Driver cannot be null.");
+            }
 
-            _driver = new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4723"), appiumOptions);
-            _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
-            //_waiter = new WebDriverWait(_driver, TimeSpan.FromSeconds(2));
-        }
-
-        [TestCleanup]
-        public void TestCleanup()
-        {
-            _driver?.Quit();
-        }
-
-        [ClassInitialize]
-        public static void ClassInitialize(TestContext context)
-        {
-            //var appiumOptions = new AppiumOptions();
-            //appiumOptions.AddAdditionalCapability("app", "Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
-            //appiumOptions.AddAdditionalCapability("deviceName", "WindowsPC");
-
-            //_driver = new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4723"), appiumOptions);
-            //Assert.IsNotNull(_driver);
-            //_driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
-
-            //_waiter = new WebDriverWait(_driver, TimeSpan.FromSeconds(2));
-        }
-
-        [ClassCleanup]
-        public static void ClassCleanup()
-        {
-            //_driver?.Quit();
+            _driver = driver;
         }
 
 
-        //[DataTestMethod]
-        //[TestCategory("WinAppCalc")]
-        //[DataRow("+", true)]
-        //[DataRow("-", true)]
-        //[DataRow("/", true)]
-        //[DataRow("*", true)]
-        //[DataRow("=", true)]
-        //[DataRow("%", false)]
-        //[DataRow("!", false)]
-        //[DataRow("#", false)]
-        //[DataRow(".", false)]
-        //[DataRow("0", false)]
-        //public void IsBasicOperator(string op, bool expected)
-        //{
-        //    string[] opeators = new string[] { "+", "-", "*", "/", "=" };
-
-        //    bool actual = opeators.Any(o => o == op);
-
-        //    Assert.AreEqual<bool>(expected, actual , $"Specified value '{op}' is not a valid operator.");
-        //}
-
-
-        [TestMethod]
-        [TestCategory("WinAppCalc")]
-        public void Addition()
+        internal void Addition()
         {
             SelectCalculator(CalculatorType.Standard);
             ClearCalcInput();
@@ -100,9 +44,7 @@ namespace WinAppDriverTests
             Assert.AreEqual("12", GetStandardCalculatorResultText(), "The calculation result wasn't correct.");
         }
 
-        [TestMethod]
-        [TestCategory("WinAppCalc")]
-        public void Division()
+        internal void Division()
         {
             SelectCalculator(CalculatorType.Standard);
             ClearCalcInput();
@@ -116,9 +58,7 @@ namespace WinAppDriverTests
             Assert.AreEqual("8", GetStandardCalculatorResultText());
         }
 
-        [TestMethod]
-        [TestCategory("WinAppCalc")]
-        public void Multiplication()
+        internal void Multiplication()
         {
             SelectCalculator(CalculatorType.Standard);
             ClearCalcInput();
@@ -130,9 +70,7 @@ namespace WinAppDriverTests
             Assert.AreEqual("81", GetStandardCalculatorResultText());
         }
 
-        [TestMethod]
-        [TestCategory("WinAppCalc")]
-        public void Subtraction()
+        internal void Subtraction()
         {
             SelectCalculator(CalculatorType.Standard);
             ClearCalcInput();
@@ -144,50 +82,12 @@ namespace WinAppDriverTests
             Assert.AreEqual("8", GetStandardCalculatorResultText());
         }
 
-        [TestCategory("WinAppCalc")]
-        [DataTestMethod]
-        [DataRow("One", "Plus", "Seven", "8")]
-        [DataRow("Nine", "Minus", "One", "8")]
-        [DataRow("Eight", "Divide by", "Eight", "1")]
-        public void Template(string input1, string operation, string input2, string expectedResult)
-        {
-            SelectCalculator(CalculatorType.Standard);
-            ClearCalcInput();
-            _driver.FindElementByName(input1).Click();
-            _driver.FindElementByName(operation).Click();
-            _driver.FindElementByName(input2).Click();
-            _driver.FindElementByName("Equals").Click();
-
-            Assert.AreEqual(expectedResult, GetStandardCalculatorResultText());
-        }
-
-
-        [TestMethod]
-        [TestCategory("WinAppCalc")]
-        public void SwitchToTemperatureCalc()
-        {
-            //_driver.FindElementByAccessibilityId("ClearEntryButtonPos0").Click();
-            ClearTemperature();
-            SelectCalculator(CalculatorType.Temperature);
-            _driver.FindElementByAccessibilityId("Units1").Click();
-            _driver.FindElementByName("Celsius").Click();
-            _driver.FindElementByAccessibilityId("Units2").Click();
-            _driver.FindElementByName("Fahrenheit").Click();
-
-            _driver.FindElementByName("Three").Click();
-            _driver.FindElementByName("Two").Click();
-
-            Assert.AreEqual("89.6", GetFahrenheitResultText());
-        }
-
-        [TestMethod]
-        [TestCategory("WinAppCalc")]
-        public void SwitchToAreaCalc()
+        internal void Area()
         {
             //converting square centimeters and asserting that valid square feets are calculated
             //_driver.FindElementByAccessibilityId("ClearEntryButtonPos0").Click();
-            ClearArea();
             SelectCalculator(CalculatorType.Area);
+            ClearArea();
             _driver.FindElementByAccessibilityId("Units1").Click();
             _driver.FindElementByName("Square centimetres").Click();
             _driver.FindElementByAccessibilityId("Units2").Click();
@@ -201,12 +101,7 @@ namespace WinAppDriverTests
             Assert.AreEqual("2.17431", GetAreaResultText());
         }
 
-        [DataTestMethod]
-        [TestCategory("WinAppCalc")]
-        [DataRow("45", "5", "2")]
-        [DataRow("6", "2", "6")]
-        [DataRow("77", "9.12", "1.6")]
-        public void SwitchToScientificCalc(string n, string x, string y)
+        internal void Scientific(string n, string x, string y)
         {
             //data - driven test to calculate the following formula: Pi + log(n) - x ^ y
             //Use the following data:
@@ -231,20 +126,47 @@ namespace WinAppDriverTests
             Assert.AreNotEqual("0", result);
         }
 
+        internal void Temperature()
+        {
+            //_driver.FindElementByAccessibilityId("ClearEntryButtonPos0").Click();
+            SelectCalculator(CalculatorType.Temperature);
+            ClearTemperature();
+            _driver.FindElementByAccessibilityId("Units1").Click();
+            _driver.FindElementByName("Celsius").Click();
+            _driver.FindElementByAccessibilityId("Units2").Click();
+            _driver.FindElementByName("Fahrenheit").Click();
+
+            _driver.FindElementByName("Three").Click();
+            _driver.FindElementByName("Two").Click();
+
+            Assert.AreEqual("89.6", GetFahrenheitResultText());
+        }
+
+        internal void Template(string input1, string operation, string input2, string expectedResult)
+        {
+            SelectCalculator(CalculatorType.Standard);
+            ClearCalcInput();
+            _driver.FindElementByName(input1).Click();
+            _driver.FindElementByName(operation).Click();
+            _driver.FindElementByName(input2).Click();
+            _driver.FindElementByName("Equals").Click();
+
+            Assert.AreEqual(expectedResult, GetStandardCalculatorResultText());
+        }
+
+
+        #region Private Methods
         private void SelectCalculator(CalculatorType calculatorType)
         {
             _driver.FindElementByAccessibilityId("TogglePaneButton").Click();
             _driver.FindElementByAccessibilityId(calculatorType.ToString()).Click();
-
-            //var el = _waiter.Until(ExpectedConditions.ElementExists(By.Name("One")));
-            //Assert.IsNotNull(el);
         }
 
         private void PickNumericValue(string numberCharacter)
         {
             //assume "valid" input, it 77 or 9.12
             foreach (char item in numberCharacter)
-            {                
+            {
                 if (char.IsDigit(item))
                 {
                     switch (item)
@@ -291,6 +213,7 @@ namespace WinAppDriverTests
             }
         }
 
+
         private void PickOperator(string operation)
         {
             //string[] opeators = new string[] { "+", "-", "*", "/", "=" };
@@ -318,21 +241,28 @@ namespace WinAppDriverTests
             }
         }
 
+
         private string GetStandardCalculatorResultText()
         {
-            _calculatorResult = _driver.FindElementByAccessibilityId("CalculatorResults");
-            Assert.IsNotNull(_calculatorResult);
+            var results = _driver.FindElementByAccessibilityId("CalculatorResults");
+            Assert.IsNotNull(results);
 
-            return _calculatorResult.Text
+            return results.Text
                 .Replace("Display is", string.Empty)
                 .Trim();
         }
 
-        private string GetFahrenheitResultText()
+        private WindowsElement GetResultElement()
         {
             var results = _driver.FindElementByAccessibilityId("Value2");
             Assert.IsNotNull(results);
-            Debug.WriteLine(results.Text);//Converts into 89.6 Fahrenheit
+            return results;
+        }
+
+
+        private string GetFahrenheitResultText()
+        {
+            WindowsElement results = GetResultElement();
 
             return results.Text
                 .Replace("Converts into ", string.Empty)
@@ -342,9 +272,7 @@ namespace WinAppDriverTests
 
         private string GetAreaResultText()
         {
-            var results = _driver.FindElementByAccessibilityId("Value2");
-            Assert.IsNotNull(results);
-            Debug.WriteLine(results.Text); //Convert from 2.17431 Square feet
+            WindowsElement results = GetResultElement();
 
             return results.Text
                 .Replace("Convert from ", string.Empty)
@@ -373,5 +301,6 @@ namespace WinAppDriverTests
             //var clear = _driver.FindElementByAccessibilityId("clearButton");
             clear?.Click();
         }
+        #endregion //Private Methods    
     }
 }

@@ -44,7 +44,7 @@ namespace WinAppDriverTests
         [Test]
         [AllureFeature("Standard Calculator")]
         [AllureSubSuite("Addition")]
-        [Category("WinAppDriver_Calc")]
+        [Category("NunitCalc")]
         public void Addition()
         {
             _driver.FindElementByName("Five").Click();
@@ -57,7 +57,7 @@ namespace WinAppDriverTests
 
         [Test]
         [AllureFeature("Standard Calculator")]
-        [Category("WinAppDriver_Calc")]
+        [Category("NunitCalc")]
         [AllureSubSuite("Division")]
         public void Division()
         {
@@ -76,7 +76,7 @@ namespace WinAppDriverTests
         [Test]
         [AllureSubSuite("Multiplication")]
         [AllureFeature("Standard Calculator")]
-        [Category("WinAppDriver_Calc")]
+        [Category("NunitCalc")]
         public void Multiplication()
         {
             ClearCalcInput();
@@ -94,7 +94,7 @@ namespace WinAppDriverTests
         [Test]
         [AllureSubSuite("Subtraction")]
         [AllureFeature("Standard Calculator")]
-        [Category("WinAppDriver_Calc")]
+        [Category("NunitCalc")]
         public void Subtraction()
         {
             ClearCalcInput();
@@ -113,7 +113,7 @@ namespace WinAppDriverTests
         [Test]
         [AllureSubSuite("Temperature")]
         [AllureFeature("Temperature Calculator")]
-        [Category("WinAppDriver_Calc")]
+        [Category("NunitCalc")]
         public void SwitchToTemperatureCalc()
         {
             //_driver.FindElementByAccessibilityId("ClearEntryButtonPos0").Click();
@@ -135,7 +135,7 @@ namespace WinAppDriverTests
         [Test]
         [AllureSubSuite("Area")]
         [AllureFeature("Area Calculator")]
-        [Category("WinAppDriver_Calc")]
+        [Category("NunitCalc")]
         public void SwitchToAreaCalc()
         {
             //converting square centimeters and asserting that valid square feets are calculated
@@ -158,7 +158,7 @@ namespace WinAppDriverTests
         }
 
         [Test]
-        [Category("WinAppDriver_Calc")]
+        [Category("NunitCalc")]
         public void SwitchToScientificCalc()
         {
             //data - driven test to calculate the following formula: Pi + log(numberCharacter) - x ^ y
