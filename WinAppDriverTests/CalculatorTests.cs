@@ -11,6 +11,7 @@ using Allure.Commons;
 namespace WinAppDriverTests
 {
     [TestClass]
+    [Ignore]
     public class CalculatorTests
     {
         private static WindowsDriver<WindowsElement> _driver;
