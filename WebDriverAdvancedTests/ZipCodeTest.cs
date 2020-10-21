@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using System;
@@ -21,11 +22,33 @@ namespace WebDriverAdvancedTests
         [TestInitialize]
         public void TestInit()
         {
-            _driver = new ChromeDriver();
+            //_driver = new ChromeDriver();
+            //_driver.Navigate().GoToUrl("https://www.zip-codes.com/search.asp?selectTab=3");
+            //_waiter = new WebDriverWait(_driver, TimeSpan.FromSeconds(2));
+
+            var sauceOptions = new Dictionary<string, object>();
+            sauceOptions.Add("screenResolution", "1280x1024");
+
+            var browserOptions = new ChromeOptions();
+            browserOptions.UseSpecCompliantProtocol = true;
+            browserOptions.PlatformName = "Windows 10";
+            browserOptions.BrowserVersion = "latest";
+            browserOptions.AddAdditionalOption("sauce:options", sauceOptions);
+
+            //browserOptions.AddAdditionalOption("browserstack.debug", "true");
+            //browserOptions.AddAdditionalOption("build", "1.0");
+            //browserOptions.AddAdditionalOption("browserName", "Chrome");
+            //browserOptions.AddAdditionalOption("platform", "Windows 8.1");
+            //browserOptions.AddAdditionalOption("version", "49.0");
+            //browserOptions.AddAdditionalOption("screenResolution", "1280x800");
+            browserOptions.AddAdditionalOption("username", "sheir1");
+            browserOptions.AddAdditionalOption("accessKey", "1280dc44-dc9d-4dbf-b854-c7db46451293");
+            browserOptions.AddAdditionalOption("name", "ZipCodeTest");
+            _driver = new RemoteWebDriver(new Uri("http://ondemand.saucelabs.com:80/wd/hub"), browserOptions);
+            _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(30);
             _driver.Navigate().GoToUrl("https://www.zip-codes.com/search.asp?selectTab=3");
 
             _waiter = new WebDriverWait(_driver, TimeSpan.FromSeconds(2));
-
         }
 
         [TestCleanup]
@@ -73,8 +96,8 @@ namespace WebDriverAdvancedTests
             Assert.IsNotNull(rows);
             ////table[@class="statTable"]/tbody/tr[2]/td[1]
 
-            List<string> zipUrls = new List<string>();
-            for (int i = 1; i < 10; i++)//grid has header row, so skip
+            List<string> zipUrls = new List<string>();  //was upto 10
+            for (int i = 1; i < 2; i++)//grid has header row, so skip
             {
                 ////table[@class="statTable"]/tbody/tr[2]/td[1]/a[@href]
                 var zipCell = rows[i].FindElement(By.XPath("td[1]/a[@href]"));
@@ -137,6 +160,7 @@ namespace WebDriverAdvancedTests
         }
 
         [TestMethod]
+        [Ignore]
         [TestCategory("ZipCodes Exercise")]
         public void SearchPageModel()
         {            
@@ -149,6 +173,7 @@ namespace WebDriverAdvancedTests
 
 
         [TestMethod]
+        [Ignore]
         [TestCategory("ZipCodes Exercise")]
         public void SearchPageModelForResults()
         {
