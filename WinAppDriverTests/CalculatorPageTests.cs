@@ -153,7 +153,7 @@ namespace WinAppDriverTests
         {
             var calcPage = new ScientificCalculatorPage(_driver);
 
-            calcPage.Formula(n, x, y);
+            calcPage.ExecuteFormulaCalculation(n, x, y);
 
             calcPage.AssertResultStartsWith(expectedResult);
         }

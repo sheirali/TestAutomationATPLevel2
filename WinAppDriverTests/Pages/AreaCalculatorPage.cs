@@ -5,7 +5,8 @@ namespace WinAppDriverTests.Pages
 {
     public class AreaCalculatorPage : CalculatorBasePage
     {
-        public AreaCalculatorPage(WindowsDriver<WindowsElement> driver) : base(driver)
+        public AreaCalculatorPage(WindowsDriver<WindowsElement> driver) 
+            : base(driver)
         {
         }
 

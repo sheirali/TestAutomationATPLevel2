@@ -5,7 +5,8 @@ namespace WinAppDriverTests.Pages
 {
     public class ScientificCalculatorPage : CalculatorBasePage
     {
-        public ScientificCalculatorPage(WindowsDriver<WindowsElement> driver) : base(driver)
+        public ScientificCalculatorPage(WindowsDriver<WindowsElement> driver) 
+            : base(driver)
         {
         }
 
@@ -15,7 +16,7 @@ namespace WinAppDriverTests.Pages
                 .Replace("point", string.Empty)
                 .Trim();
 
-        public void Formula(string n, string x, string y)
+        public void ExecuteFormulaCalculation(string n, string x, string y)
         {
             //data - driven test to calculate the following formula: Pi + log(n) - x ^ y
             //Use the following data:
