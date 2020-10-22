@@ -47,7 +47,7 @@ namespace WebDriverAdvancedTests
 
             string recordsXpath = "//table[@class='statTable']/following-sibling::div/div/span";
             //(1 - 50 of 1102 Records)
-            IWebElement elSpan = wait.Until(ExpectedConditions.ElementExists(By.XPath(recordsXpath)));
+            IWebElement elSpan = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementExists(By.XPath(recordsXpath)));
             string resultText = elSpan.Text;
             Debug.WriteLine(resultText);
             resultText = resultText.Replace(" Records)", "");
@@ -75,7 +75,7 @@ namespace WebDriverAdvancedTests
 
             string recordsXpath = "//table[@class='statTable']/following-sibling::div/div/span";
             //(1 - 50 of 1102 Records)
-            IWebElement elSpan = _wait.Until(ExpectedConditions.ElementExists(By.XPath(recordsXpath)));
+            IWebElement elSpan = _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementExists(By.XPath(recordsXpath)));
             string resultText = elSpan.Text;
             resultText = resultText.Replace(" Records)", "");
             int indexOf = resultText.IndexOf("of ");
@@ -86,7 +86,7 @@ namespace WebDriverAdvancedTests
            
 
             string gridXpath = @"//table[@class='statTable']";
-            IWebElement resultGrid = _wait.Until(ExpectedConditions.ElementExists(By.XPath(gridXpath)));
+            IWebElement resultGrid = _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementExists(By.XPath(gridXpath)));
             
             //now have results in a grid   
             var rows = resultGrid.FindElements(By.XPath("tbody/tr"));
@@ -109,7 +109,7 @@ namespace WebDriverAdvancedTests
 
                 //to help speed up finding of elements just do 1 wait
                 string cityXpath = "//table[@class='statTable']/tbody/tr/td[1]/span[text() = 'City:']/parent::td/following-sibling::td[1]";
-                var el = _wait.Until(ExpectedConditions.ElementExists(By.XPath(cityXpath)));
+                var el = _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementExists(By.XPath(cityXpath)));
 
                 ZipSearchResult result = new ZipSearchResult()
                 {
@@ -132,7 +132,7 @@ namespace WebDriverAdvancedTests
         private void CreateMapScreenshot(ZipSearchResult result)
         {
             //Save each screenshot on the disk with file name <CityName>-<State>-<ZipCode>.jpg, for example Paauilo- Hawaii- 96776.jpg
-            _driver.SwitchTo().NewWindow(WindowType.Tab);
+            ////_driver.SwitchTo().NewWindow(WindowType.Tab);
             _driver.Navigate().GoToUrl(result.MapUrl);
 
 
@@ -145,7 +145,7 @@ namespace WebDriverAdvancedTests
             //need to wait for google maps to completely load the map before taking screenshot
              //_driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(5.0);
             string someElXpath = @"//*[@id='pane']/div/div[1]/div/div/div[5]/div[1]/div/button";
-            var el = _wait.Until(ExpectedConditions.ElementExists(By.XPath(someElXpath)));
+            var el = _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementExists(By.XPath(someElXpath)));
 
             TakeFullScreenshot(_driver, fullPath, ScreenshotImageFormat.Png);
         }

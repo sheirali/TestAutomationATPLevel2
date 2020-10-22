@@ -26,29 +26,24 @@ namespace WebDriverAdvancedTests
             //_driver.Navigate().GoToUrl("https://www.zip-codes.com/search.asp?selectTab=3");
             //_waiter = new WebDriverWait(_driver, TimeSpan.FromSeconds(2));
 
-            var sauceOptions = new Dictionary<string, object>();
-            sauceOptions.Add("screenResolution", "1280x1024");
-
-            var browserOptions = new ChromeOptions();
-            browserOptions.UseSpecCompliantProtocol = true;
-            browserOptions.PlatformName = "Windows 10";
-            browserOptions.BrowserVersion = "latest";
-            browserOptions.AddAdditionalOption("sauce:options", sauceOptions);
-
-            //browserOptions.AddAdditionalOption("browserstack.debug", "true");
-            //browserOptions.AddAdditionalOption("build", "1.0");
-            //browserOptions.AddAdditionalOption("browserName", "Chrome");
-            //browserOptions.AddAdditionalOption("platform", "Windows 8.1");
-            //browserOptions.AddAdditionalOption("version", "49.0");
-            //browserOptions.AddAdditionalOption("screenResolution", "1280x800");
-            browserOptions.AddAdditionalOption("username", "sheir1");
-            browserOptions.AddAdditionalOption("accessKey", "1280dc44-dc9d-4dbf-b854-c7db46451293");
-            browserOptions.AddAdditionalOption("name", "ZipCodeTest");
-            _driver = new RemoteWebDriver(new Uri("http://ondemand.saucelabs.com:80/wd/hub"), browserOptions);
+            var driverOptions = new ChromeOptions(); 
+            var runName = GetType().Assembly.GetName().Name;
+            var timestamp = $"{DateTime.Now:yyyyMMdd.HHmm}";
+            ////driverOptions.AddAdditionalOption("BrowserName", "chrome");
+            ////driverOptions.AddAdditionalCapability("browserVersion", "78.0");
+            driverOptions.BrowserVersion = "86";
+            driverOptions.AddAdditionalCapability("name", runName, true);
+            driverOptions.AddAdditionalCapability("videoName", $"{runName}.{timestamp}.mp4", true);
+            driverOptions.AddAdditionalCapability("logName", $"{runName}.{timestamp}.log", true);
+            ////driverOptions.AddAdditionalCapability("enableVNC", false);
+            driverOptions.AddAdditionalCapability("enableVideo", true, true);
+            ////driverOptions.AddAdditionalCapability("enableLog", true);
+            driverOptions.AddAdditionalCapability("screenResolution", "1920x1080x24", true);
+            _driver = new RemoteWebDriver(new Uri("http://127.0.0.1:4444/wd/hub"), driverOptions);
             _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(30);
-            _driver.Navigate().GoToUrl("https://www.zip-codes.com/search.asp?selectTab=3");
 
             _waiter = new WebDriverWait(_driver, TimeSpan.FromSeconds(2));
+            _driver.Navigate().GoToUrl("https://www.zip-codes.com/search.asp?selectTab=3");
         }
 
         [TestCleanup]
@@ -58,9 +53,17 @@ namespace WebDriverAdvancedTests
         }
 
         [TestMethod]
+        [TestCategory("Selenoid Exercise")]
+        public void RunInSelenoid()
+        {
+            Assert.AreEqual("https://www.zip-codes.com/search.asp?selectTab=3", _driver.Url);
+        }
+
+        [TestMethod]
         [TestCategory("ZipCodes Exercise")]
         public void TownSearch()
         {
+            Assert.AreEqual("https://www.zip-codes.com/search.asp?selectTab=3", _driver.Url);
             var town = _driver.FindElement(By.XPath(@"//*[@id='ui-id-8']/form/input[2]"));
             var submitBtn = _driver.FindElement(By.XPath(@"//*[@id='ui-id-8']/form/input[6]"));
             
@@ -88,7 +91,7 @@ namespace WebDriverAdvancedTests
 
 
             string gridXpath = @"//table[@class='statTable']";
-            var resultGrid = _waiter.Until(ExpectedConditions.ElementExists(By.XPath(gridXpath)));
+            var resultGrid = _waiter.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementExists(By.XPath(gridXpath)));
             //now have results in a grid
             //var resultGrid = _driver.FindElement(By.XPath());
             Assert.IsNotNull(resultGrid);
@@ -116,7 +119,7 @@ namespace WebDriverAdvancedTests
 
                 //to help speed up finding of elements just do 1 wait
                 string cityXpath = "//table[@class='statTable']/tbody/tr/td[1]/span[text() = 'City:']/parent::td/following-sibling::td[1]";
-                var el = _waiter.Until(ExpectedConditions.ElementExists(By.XPath(cityXpath)));
+                var el = _waiter.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementExists(By.XPath(cityXpath)));
 
                 //var elCity = _waiter.Until(ExpectedConditions.ElementExists(By.XPath(cityXpath)));
                 //Console.WriteLine(elCity.Text);
@@ -145,7 +148,7 @@ namespace WebDriverAdvancedTests
             //take a screenshot
             //Save each screenshot on the disk with file name <CityName>-<State>-<ZipCode>.jpg, for example Paauilo- Hawaii- 96776.jpg
             string mapUrl = "https://www.google.com/maps/place/18.037324+-66.796287";
-            _driver.SwitchTo().NewWindow(WindowType.Tab);
+            ////_driver.SwitchTo().NewWindow(WindowType.Tab);
             _driver.Navigate().GoToUrl(mapUrl);
             string tempFilePath = Path.GetTempPath();
             string city = "Guayanilla", state = "PR [Puerto Rico]", zip = "00656";
