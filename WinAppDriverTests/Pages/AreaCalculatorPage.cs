@@ -3,21 +3,21 @@ using OpenQA.Selenium.Appium.Windows;
 
 namespace WinAppDriverTests.Pages
 {
-    public class TemperatureCalculatorPage : CalculatorBasePage
+    public class AreaCalculatorPage : CalculatorBasePage
     {
-        public TemperatureCalculatorPage(WindowsDriver<WindowsElement> driver) : base(driver)
+        public AreaCalculatorPage(WindowsDriver<WindowsElement> driver) : base(driver)
         {
         }
 
         private string ResultText =>
             GetResultElement().Text
                 .Replace("Converts into ", string.Empty)
-                .Replace("Fahrenheit", string.Empty)
+                .Replace("Square feet", string.Empty)
                 .Trim();
 
-        public void ConvertCelsiusToFahrenheit(int value)
+        public void ConvertSqCmToSqFt(int value)
         {
-            SelectConverterCalculator(CalculatorType.Temperature, "Celsius", "Fahrenheit", value);
+            SelectConverterCalculator(CalculatorType.Area, "Square centimetres", "Square feet", value);
         }
 
         public void AssertResult(double expectedResult)

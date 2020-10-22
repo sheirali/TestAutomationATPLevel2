@@ -1,8 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium.Appium.Windows;
-using WinAppDriverTests.Pages;
 
-namespace WinAppDriverTests
+namespace WinAppDriverTests.Pages
 {
     public class StandardCalculatorPage : CalculatorBasePage
     {
@@ -10,66 +9,34 @@ namespace WinAppDriverTests
         {
         }
 
-        public string StandardCalculatorResultText => 
-            _driver.FindElementByAccessibilityId("CalculatorResults").Text
+        private string ResultText =>
+            GetStandardResultElement().Text
                 .Replace("Display is", string.Empty)
                 .Trim();
 
-        public void Sum(params int[] numbersToBeSum)
+        public void Sum(params int[] values)
         {
-            SelectCalculator(CalculatorType.Standard);
-            ClearCalcInput();
-            foreach (var num in numbersToBeSum)
-            {
-                PickNumericValue(num.ToString());
-                PickOperator("+");
-            }
-
-            PickNumericValue("0");
-            PickOperator("=");
+            ExecuteBasicMathOperation("+", "0", values);
         }
 
-        internal void Division()
+        public void Subtract(params int[] values)
         {
-            SelectCalculator(CalculatorType.Standard);
-            ClearCalcInput();
-            _driver.FindElementByAccessibilityId("num8Button").Click();
-            _driver.FindElementByAccessibilityId("num8Button").Click();
-            _driver.FindElementByAccessibilityId("divideButton").Click();
-            _driver.FindElementByAccessibilityId("num1Button").Click();
-            _driver.FindElementByAccessibilityId("num1Button").Click();
-            _driver.FindElementByAccessibilityId("equalButton").Click();
-
-            Assert.AreEqual("8", StandardCalculatorResultText);
+            ExecuteBasicMathOperation("-", "0", values);
         }
 
-        internal void Multiplication()
+        public void Divide(params int[] values)
         {
-            SelectCalculator(CalculatorType.Standard);
-            ClearCalcInput();
-            _driver.FindElementByXPath("//Button[@Name=\"Nine\"]").Click();
-            _driver.FindElementByXPath("//Button[@Name='Multiply by']").Click();
-            _driver.FindElementByXPath("//Button[@Name='Nine']").Click();
-            _driver.FindElementByXPath("//Button[@Name='Equals']").Click();
-
-            Assert.AreEqual("81", StandardCalculatorResultText);
+            ExecuteBasicMathOperation("/", "1", values);
         }
 
-        internal void Subtraction()
+        public void Multiply(params int[] values)
         {
-            SelectCalculator(CalculatorType.Standard);
-            ClearCalcInput();
-            _driver.FindElementByXPath("//Button[@AutomationId='num9Button']").Click();
-            _driver.FindElementByXPath("//Button[@AutomationId='minusButton']").Click();
-            _driver.FindElementByXPath("//Button[@AutomationId='num1Button']").Click();
-            _driver.FindElementByXPath("//Button[@AutomationId='equalButton']").Click();
-
-            Assert.AreEqual("8", StandardCalculatorResultText);
+            ExecuteBasicMathOperation("*", "1", values);
         }
 
         public void AssertResult(int expectedResult)
         {
-            Assert.AreEqual(expectedResult.ToString(), StandardCalculatorResultText, "The calculation result wasn't correct.");
+            Assert.AreEqual(expectedResult.ToString(), ResultText, "The calculation result wasn't correct.");
         }
     }
 }
