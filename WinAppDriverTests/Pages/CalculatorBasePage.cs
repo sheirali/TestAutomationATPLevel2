@@ -137,21 +137,6 @@ namespace WinAppDriverTests.Pages
             return results;
         }
 
-        protected void ExecuteBasicMathOperation(string operation, string lastOperatan, int[] values)
-        {
-            SelectCalculator(CalculatorType.Standard);
-            ClearCalcInput();
-
-            foreach (var num in values)
-            {
-                PickNumericValue(num.ToString());
-                PickOperator(operation);
-            }
-
-            PickNumericValue(lastOperatan);
-            PickOperator("=");
-        }
-
         protected void SelectConverterCalculator(CalculatorType calculatorType, string fromUnit, string toUnit, int value)
         {
             SelectCalculator(calculatorType);

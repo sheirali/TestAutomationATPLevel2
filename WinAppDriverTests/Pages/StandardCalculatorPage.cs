@@ -14,6 +14,21 @@ namespace WinAppDriverTests.Pages
                 .Replace("Display is", string.Empty)
                 .Trim();
 
+        private void ExecuteBasicMathOperation(string operation, string lastOperatan, int[] values)
+        {
+            SelectCalculator(CalculatorType.Standard);
+            ClearCalcInput();
+
+            foreach (var num in values)
+            {
+                PickNumericValue(num.ToString());
+                PickOperator(operation);
+            }
+
+            PickNumericValue(lastOperatan);
+            PickOperator("=");
+        }
+
         public void Sum(params int[] values)
         {
             ExecuteBasicMathOperation("+", "0", values);
