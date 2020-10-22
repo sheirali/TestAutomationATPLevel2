@@ -2,7 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Windows;
 using System;
-using System.Linq;
+using WinAppDriverTests.Pages;
 
 namespace WinAppDriverTests
 {
@@ -32,15 +32,16 @@ namespace WinAppDriverTests
             _driver?.Quit();
         }
 
+
         [TestMethod]
         [TestCategory("Calc Page")]
         public void Return8_When_Sum4And4()
         {
-            var scPage = new StandardCalculatorPage(_driver);
+            var calcPage = new StandardCalculatorPage(_driver);
 
-            scPage.Sum(4, 4);
+            calcPage.Sum(4, 4);
 
-            scPage.AssertResult(8);
+            calcPage.AssertResult(8);
         }
 
         [TestMethod]
@@ -48,68 +49,113 @@ namespace WinAppDriverTests
         public void Return8_When_Sum2And2And4()
         {
             // Arrange
-            var scPage = new StandardCalculatorPage(_driver);
+            var calcPage = new StandardCalculatorPage(_driver);
 
             // Act
-            scPage.Sum(2, 2, 4);
+            calcPage.Sum(2, 2, 4);
 
             // Assert
-            scPage.AssertResult(8);
+            calcPage.AssertResult(8);
         }
 
-        [TestMethod]
-        [TestCategory("Calc Page")]
-        public void Division()
-        {
-            ////_calcPage.Division();
-        }
 
-        [TestMethod]
-        [TestCategory("Calc Page")]
-        public void Multiplication()
-        {
-            ////_calcPage.Multiplication();
-        }
-
-        [TestMethod]
-        [TestCategory("Calc Page")]
-        public void Subtraction()
-        {
-            ////_calcPage.Subtraction();
-        }
-
-        [TestCategory("Calc Page")]
         [DataTestMethod]
-        [DataRow("One", "Plus", "Seven", "8")]
-        [DataRow("Nine", "Minus", "One", "8")]
-        [DataRow("Eight", "Divide by", "Eight", "1")]
-        public void Template(string input1, string operation, string input2, string expectedResult)
-        {
-            _calcPage.Template( input1,  operation,  input2,  expectedResult);
-        }
-
-        [TestMethod]
         [TestCategory("Calc Page")]
-        public void SwitchToTemperatureCalc()
+        [DataRow(8, 2, 2, 2, 2)]
+        [DataRow(8, 10, -2)]
+        [DataRow(8, -2, 10)]
+        [DataRow(-2, -10, 8)]
+        public void Sum(int expectedResult, params int[] values)
         {
-            _calcPage.Temperature();
-        }
+            var calcPage = new StandardCalculatorPage(_driver);
 
-        [TestMethod]
-        [TestCategory("Calc Page")]
-        public void SwitchToAreaCalc()
-        {
-            _calcPage.Area();
+            calcPage.Sum(values);
+
+            calcPage.AssertResult(expectedResult);
         }
 
         [DataTestMethod]
         [TestCategory("Calc Page")]
-        [DataRow("45", "5", "2")]
-        [DataRow("6", "2", "6")]
-        [DataRow("77", "9.12", "1.6")]
-        public void SwitchToScientificCalc(string n, string x, string y)
+        [DataRow(8, 14, 2, 2, 2)]
+        [DataRow(12, 10, -2)]
+        [DataRow(-12, -2, 10)]
+        [DataRow(2, 10, 8)]
+        public void Subtract(int expectedResult, params int[] values)
         {
-            _calcPage.Scientific(n, x, y);
+            var calcPage = new StandardCalculatorPage(_driver);
+
+            calcPage.Subtract(values);
+
+            calcPage.AssertResult(expectedResult);
+        }
+
+        [DataTestMethod]
+        [TestCategory("Calc Page")]
+        [DataRow(2, 16, 2, 2, 2)]
+        [DataRow(-5, 10, -2)]
+        [DataRow(1, -2, -2)]
+        public void Divide(int expectedResult, params int[] values)
+        {
+            var calcPage = new StandardCalculatorPage(_driver);
+
+            calcPage.Divide(values);
+
+            calcPage.AssertResult(expectedResult);
+        }
+
+        [DataTestMethod]
+        [TestCategory("Calc Page")]
+        [DataRow(16, 2, 2, 2, 2)]
+        [DataRow(-20, 10, -2)]
+        [DataRow(4, -2, -2)]
+        public void Multiply(int expectedResult, params int[] values)
+        {
+            var calcPage = new StandardCalculatorPage(_driver);
+
+            calcPage.Multiply(values);
+
+            calcPage.AssertResult(expectedResult);
+        }
+
+
+        [DataTestMethod]
+        [TestCategory("Calc Page")]
+        [DataRow(32, 89.6)]
+        public void ConvertCelsiusToFahrenheit(int value, double expectedResult)
+        {
+            var calcPage = new TemperatureCalculatorPage(_driver);
+
+            calcPage.ConvertCelsiusToFahrenheit(value);
+
+            calcPage.AssertResult(expectedResult);
+        }
+
+
+        [DataTestMethod]
+        [TestCategory("Calc Page")]
+        [DataRow(2020, 2.17431)]        
+        public void CalculateSquareAreaCentimetreToFeet(int value, double expectedResult)
+        {
+            var calcPage = new AreaCalculatorPage(_driver);
+
+            calcPage.ConvertSqCmToSqFt(value);
+
+            calcPage.AssertResult(expectedResult);
+        }
+
+
+        [DataTestMethod]
+        [TestCategory("Calc Page")]
+        [DataRow("45", "5", "2", -8.88)]
+        [DataRow("6", "2", "6", -3.94)]
+        [DataRow("77", "9.12", "1.6", -5.87)]
+        public void ScientificFormula(string n, string x, string y, double expectedResult)
+        {
+            var calcPage = new ScientificCalculatorPage(_driver);
+
+            calcPage.Formula(n, x, y);
+
+            calcPage.AssertResultStartsWith(expectedResult);
         }
     }
 }

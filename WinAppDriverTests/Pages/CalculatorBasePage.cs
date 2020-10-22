@@ -1,6 +1,8 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Appium.Windows;
+using OpenQA.Selenium.Support.UI;
+using System;
+
 
 namespace WinAppDriverTests.Pages
 {
@@ -19,6 +21,12 @@ namespace WinAppDriverTests.Pages
             clear?.Click();
         }
 
+        protected void ClearEntryInput()
+        {
+            var clear = _driver.FindElementByName("Clear entry");
+            clear?.Click();
+        }
+
         protected void SelectCalculator(CalculatorType calculatorType)
         {
             _driver.FindElementByAccessibilityId("TogglePaneButton").Click();
@@ -27,6 +35,13 @@ namespace WinAppDriverTests.Pages
 
         protected void PickNumericValue(string numberCharacter)
         {
+            //due to how calculator handles negation (ie -2 ), have to put the negation at end
+            if (numberCharacter.StartsWith('-'))
+            {
+                string value = numberCharacter.Substring(1);
+                numberCharacter = value + "-";
+            }
+
             //assume "valid" input, it 77 or 9.12
             foreach (char item in numberCharacter)
             {
@@ -69,10 +84,20 @@ namespace WinAppDriverTests.Pages
                     }
                 }
 
-                if (char.IsPunctuation(item))
+                if (item.Equals('-'))
+                {
+                    _driver.FindElementByAccessibilityId("negateButton").Click();
+                }
+
+                if (item.Equals('.'))
                 {
                     _driver.FindElementByAccessibilityId("decimalSeparatorButton").Click();
                 }
+
+                //if (char.IsPunctuation(item))//says both . and - are punctuation
+                //{
+                //    _driver.FindElementByAccessibilityId("decimalSeparatorButton").Click();
+                //}
             }
         }
 
@@ -99,14 +124,49 @@ namespace WinAppDriverTests.Pages
                     break;
             }
         }
-
- 
-
+        
         protected WindowsElement GetResultElement()
         {
             var results = _driver.FindElementByAccessibilityId("Value2");
-            ////Assert.IsNotNull(results);
             return results;
+        }
+
+        protected WindowsElement GetStandardResultElement()
+        {
+            var results = _driver.FindElementByAccessibilityId("CalculatorResults");
+            return results;
+        }
+
+        protected void ExecuteBasicMathOperation(string operation, string lastOperatan, int[] values)
+        {
+            SelectCalculator(CalculatorType.Standard);
+            ClearCalcInput();
+
+            foreach (var num in values)
+            {
+                PickNumericValue(num.ToString());
+                PickOperator(operation);
+            }
+
+            PickNumericValue(lastOperatan);
+            PickOperator("=");
+        }
+
+        protected void SelectConverterCalculator(CalculatorType calculatorType, string fromUnit, string toUnit, int value)
+        {
+            SelectCalculator(calculatorType);
+            ClearEntryInput();
+
+            _driver.FindElementByAccessibilityId("Units1").Click();
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(30));
+            var celsiusButton = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.Name(fromUnit)));
+            celsiusButton.Click();
+
+            _driver.FindElementByAccessibilityId("Units2").Click();
+            var fahrenheitButton = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.Name(toUnit)));
+            fahrenheitButton.Click();
+
+            PickNumericValue(value.ToString());
         }
     }
 }
