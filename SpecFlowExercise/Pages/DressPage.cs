@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 
 namespace SpecFlowExercise.Pages
@@ -74,41 +73,32 @@ namespace SpecFlowExercise.Pages
 
         public void QuickView(int productId)
         {
-//Add tests for navigation to Quick View and verification of the info there.
-//Add tests to change the quantity, size, color from a quick view, and add the item to the cart.
-//Verify that the correct item was added.
+            // Add tests for navigation to Quick View and verification of the info there.
+            // Add tests to change the quantity, size, color from a quick view, and add the item to the cart.
+            // Verify that the correct item was added.
 
             Debug.WriteLine($"QuickView dressID {productId}");
             string productKey = "id_product=" + productId;
 
 
             //sigh...keep trying to get the QuickView popup but failing
-            //valid xPath but error on Click -- element not interactable
-
-
-            //  //div[@class='quick-view-wrapper-mobile']  
-            //string qviewXpath = $"//a[@class='quick-view-mobile'][contains(@href, '{productKey}')]/parent::div";
-
-            string qviewXpath = $"//a[@class='quick-view-mobile'][contains(@href, '{productKey}')]/i";
+            string quickViewContainerXpath = $"//a[@class='quick-view-mobile'][contains(@href, '{productKey}')]//parent::div//parent::div";
+            var actions = new Actions(_driver);
+            actions.MoveToElement(_driver.FindElement(By.XPath(quickViewContainerXpath))).Perform();
+            string qviewXpath = $"//a[@class='quick-view'][contains(@href, '{productKey}')]/span";
             var elQuickView = _waiter.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementExists(By.XPath(qviewXpath)));
+            // start the quick view frame.
+            elQuickView.Click();
 
-            if (elQuickView.Enabled && elQuickView.Displayed)//false
-            {
-                Debug.WriteLine($"elQuickView = {elQuickView.Text} gonna click via JS");//no name
-                ((IJavaScriptExecutor)_driver).ExecuteScript("argument[0].click();", elQuickView);
-            }
-            else
-            {
-                Debug.WriteLine($"elQuickView = {elQuickView.Text} gonna click via Click");
-                elQuickView.Click();
-            }
-
-
-            _waiter.Until(el => CompareCount != null);
-
-            //launches a popup - iframe ??
-            var popup = _driver.SwitchTo().Frame(1);
+            var quickViewCloseButton = _waiter.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementExists(By.XPath("//a[@title='Close']")));
+            _driver.SwitchTo().Frame(_driver.FindElement(By.XPath("//iframe[contains(@id, 'fancybox-frame')]")));
             
+            // do other actions in the frame.
+            _driver.SwitchTo().DefaultContent();
+            quickViewCloseButton.Click();
+            
+
+
             //just a delay
             var elAddToCart = _waiter.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementExists(By.XPath("//button[@class='exclusive']")));
             _waiter.Until(el => elAddToCart != null);
@@ -151,8 +141,7 @@ namespace SpecFlowExercise.Pages
             //</a>
             //driver.findElement(By.cssSelector("ul. clearfix li:last-child");
 
-            popup.Close();
-            _driver.SwitchTo().DefaultContent();
+            ////popup.Close();
         }
     }
 }

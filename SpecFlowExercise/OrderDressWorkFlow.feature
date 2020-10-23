@@ -1,5 +1,4 @@
-﻿@chrome
-Feature: Order Dress WorkFlow
+﻿Feature: Order Dress WorkFlow
 	As an online shopper
 	I want to be able to compare and order dresses
 

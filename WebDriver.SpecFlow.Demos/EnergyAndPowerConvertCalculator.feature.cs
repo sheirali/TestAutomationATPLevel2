@@ -136,7 +136,7 @@ this.ScenarioInitialize(scenarioInfo);
  testRunner.And("choose conversions to Newton-meters", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 12
- testRunner.And("type \"30\" kWh", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("type 30 kWh", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 13
  testRunner.Then("assert that 1.080000e+8 Nm are displayed as answer", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");

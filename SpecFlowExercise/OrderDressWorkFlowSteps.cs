@@ -32,6 +32,7 @@ namespace SpecFlowExercise
             _dressPage.Open();
         }
 
+        [When(@"buy dresses")]
         [When(@"add dresses")]
         public void WhenAddDresses(Table dressesTable)
         {
